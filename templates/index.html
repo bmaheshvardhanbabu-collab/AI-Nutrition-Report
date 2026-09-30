@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Nutrition Report</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="brand">
+
+        <div class="brand-mark">
+            AI
+        </div>
+
+        <div>
+
+            <h2>Nutrition Report</h2>
+
+            <span>Intelligent Food Analysis</span>
+
+        </div>
+
+    </div>
+
+
+    <nav>
+
+        <a href="#home">Home</a>
+
+        <a href="#report">Nutrition Report</a>
+
+        <a href="#assistant">AI Assistant</a>
+
+    </nav>
+
+</header>
+
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero"
+         id="home">
+
+
+    <div class="hero-content">
+
+
+        <div class="status-badge">
+
+            <span class="status-dot"></span>
+
+            AI POWERED NUTRITION ANALYSIS
+
+        </div>
+
+
+        <h1>
+
+            Understand Your Food.
+
+            <span>Improve Your Health.</span>
+
+        </h1>
+
+
+        <p>
+
+            Get intelligent nutritional insights about your
+            favorite foods and meals. Analyze calories,
+            protein, carbohydrates, fats, fiber and more
+            using Artificial Intelligence.
+
+        </p>
+
+
+        <!-- FOOD FORM -->
+
+        <form method="POST"
+              class="food-form">
+
+
+            <input type="hidden"
+                   name="action"
+                   value="generate_report">
+
+
+            <div class="food-input">
+
+
+                <span class="input-icon">
+                    FOOD
+                </span>
+
+
+                <input type="text"
+                       name="food"
+                       value="{{ food }}"
+                       placeholder="Enter food or meal..."
+                       required>
+
+
+            </div>
+
+
+            <button type="submit"
+                    class="generate-btn">
+
+                Generate Report
+
+                <span>→</span>
+
+            </button>
+
+
+        </form>
+
+
+        <!-- QUICK FOODS -->
+
+        <div class="quick-foods">
+
+
+            <span>Popular:</span>
+
+
+            <button onclick="setFood('Rice')">
+                Rice
+            </button>
+
+
+            <button onclick="setFood('Banana')">
+                Banana
+            </button>
+
+
+            <button onclick="setFood('Chicken')">
+                Chicken
+            </button>
+
+
+            <button onclick="setFood('Vegetable Salad')">
+                Vegetable Salad
+            </button>
+
+
+            <button onclick="setFood('Biryani')">
+                Biryani
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- HERO VISUAL -->
+
+    <div class="hero-visual">
+
+
+        <div class="glow"></div>
+
+
+        <div class="hero-image-card">
+
+
+            <div class="image-placeholder">
+
+                <div class="image-content">
+
+                    <span class="image-label">
+                        AI FOOD ANALYSIS
+                    </span>
+
+                    <h3>
+                        Eat Smart.
+                    </h3>
+
+                    <p>
+                        Know what's on your plate.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="floating-stat stat-top">
+
+            <strong>100%</strong>
+
+            <span>AI Analysis</span>
+
+        </div>
+
+
+        <div class="floating-stat stat-bottom">
+
+            <strong>Smart</strong>
+
+            <span>Health Insights</span>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- ================= ERROR ================= -->
+
+{% if error %}
+
+<section class="error-section">
+
+    <div class="error-card">
+
+        <div class="error-icon">
+            !
+        </div>
+
+        <div>
+
+            <strong>
+                Something went wrong
+            </strong>
+
+            <p>
+                {{ error }}
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+
+<!-- ================= REPORT ================= -->
+
+{% if nutrition %}
+
+<section class="report-section"
+         id="report">
+
+
+    <div class="section-heading">
+
+
+        <span>
+            AI GENERATED ANALYSIS
+        </span>
+
+
+        <h2>
+            Nutrition Report
+        </h2>
+
+
+        <p>
+
+            Detailed nutritional insights for
+
+            <strong>
+                {{ nutrition.food_name }}
+            </strong>
+
+        </p>
+
+
+    </div>
+
+
+
+    <!-- MAIN FOOD REPORT -->
+
+    <div class="main-report">
+
+
+        <div class="food-photo">
+
+
+            {% if food_image %}
+
+
+            <img src="{{ food_image.url }}"
+                 alt="{{ nutrition.food_name }}">
+
+
+            <div class="photo-credit">
+
+                Photo by
+
+                <a href="{{ food_image.photographer_url }}"
+                   target="_blank">
+
+                    {{ food_image.photographer }}
+
+                </a>
+
+            </div>
+
+
+            {% else %}
+
+
+            <div class="no-photo">
+
+                Food Image
+
+            </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+
+        <div class="food-info">
+
+
+            <span class="report-label">
+                ANALYZED FOOD
+            </span>
+
+
+            <h3>
+                {{ nutrition.food_name }}
+            </h3>
+
+
+            <p>
+                AI-powered nutrition analysis based on
+                your selected food or meal.
+            </p>
+
+
+
+            <!-- HEALTH SCORE -->
+
+            <div class="health-score">
+
+
+                <div class="score">
+
+                    <strong>
+                        {{ nutrition.health_score }}
+                    </strong>
+
+                    <span>
+                        /100
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <small>
+                        HEALTH SCORE
+                    </small>
+
+                    <h4>
+                        {{ nutrition.health_score_label }}
+                    </h4>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- NUTRITION CARDS -->
+
+    <div class="nutrition-grid">
+
+
+        <div class="nutrition-card">
+
+            <span class="card-label">
+                CALORIES
+            </span>
+
+            <strong>
+                {{ nutrition.calories }}
+            </strong>
+
+            <small>
+                kcal
+            </small>
+
+        </div>
+
+
+        <div class="nutrition-card">
+
+            <span class="card-label">
+                PROTEIN
+            </span>
+
+            <strong>
+                {{ nutrition.protein_grams }}
+            </strong>
+
+            <small>
+                grams
+            </small>
+
+        </div>
+
+
+        <div class="nutrition-card">
+
+            <span class="card-label">
+                CARBOHYDRATES
+            </span>
+
+            <strong>
+                {{ nutrition.carbohydrates_grams }}
+            </strong>
+
+            <small>
+                grams
+            </small>
+
+        </div>
+
+
+        <div class="nutrition-card">
+
+            <span class="card-label">
+                FATS
+            </span>
+
+            <strong>
+                {{ nutrition.fats_grams }}
+            </strong>
+
+            <small>
+                grams
+            </small>
+
+        </div>
+
+
+        <div class="nutrition-card">
+
+            <span class="card-label">
+                FIBER
+            </span>
+
+            <strong>
+                {{ nutrition.fiber_grams }}
+            </strong>
+
+            <small>
+                grams
+            </small>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- MACRONUTRIENTS -->
+
+    <div class="analysis-card">
+
+
+        <div class="card-title">
+
+            <span>
+                NUTRITION BREAKDOWN
+            </span>
+
+            <h3>
+                Macronutrient Balance
+            </h3>
+
+        </div>
+
+
+
+        <!-- PROTEIN -->
+
+        <div class="progress-item">
+
+
+            <div class="progress-header">
+
+                <span>
+                    Protein
+                </span>
+
+                <strong>
+                    {{ nutrition.protein_percent }}%
+                </strong>
+
+            </div>
+
+
+            <div class="progress-bar">
+
+                <div class="progress protein"
+                     style="width: {{ nutrition.protein_percent }}%;">
+                </div>
+
+            </div>
+
+
+            <p>
+                {{ nutrition.protein_info }}
+            </p>
+
+
+        </div>
+
+
+
+        <!-- CARBS -->
+
+        <div class="progress-item">
+
+
+            <div class="progress-header">
+
+                <span>
+                    Carbohydrates
+                </span>
+
+                <strong>
+                    {{ nutrition.carbohydrates_percent }}%
+                </strong>
+
+            </div>
+
+
+            <div class="progress-bar">
+
+                <div class="progress carbs"
+                     style="width: {{ nutrition.carbohydrates_percent }}%;">
+                </div>
+
+            </div>
+
+
+            <p>
+                {{ nutrition.carbohydrates_info }}
+            </p>
+
+
+        </div>
+
+
+
+        <!-- FATS -->
+
+        <div class="progress-item">
+
+
+            <div class="progress-header">
+
+                <span>
+                    Fats
+                </span>
+
+                <strong>
+                    {{ nutrition.fats_percent }}%
+                </strong>
+
+            </div>
+
+
+            <div class="progress-bar">
+
+                <div class="progress fats"
+                     style="width: {{ nutrition.fats_percent }}%;">
+                </div>
+
+            </div>
+
+
+            <p>
+                {{ nutrition.fats_info }}
+            </p>
+
+
+        </div>
+
+
+
+        <!-- FIBER -->
+
+        <div class="progress-item">
+
+
+            <div class="progress-header">
+
+                <span>
+                    Fiber
+                </span>
+
+                <strong>
+                    {{ nutrition.fiber_percent }}%
+                </strong>
+
+            </div>
+
+
+            <div class="progress-bar">
+
+                <div class="progress fiber"
+                     style="width: {{ nutrition.fiber_percent }}%;">
+                </div>
+
+            </div>
+
+
+            <p>
+                {{ nutrition.fiber_info }}
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- BENEFITS AND CONCERNS -->
+
+    <div class="info-grid">
+
+
+        <div class="info-card benefits">
+
+
+            <span>
+                POSITIVE IMPACT
+            </span>
+
+
+            <h3>
+                Health Benefits
+            </h3>
+
+
+            <p>
+                {{ nutrition.health_benefits }}
+            </p>
+
+
+        </div>
+
+
+
+        <div class="info-card concerns">
+
+
+            <span>
+                THINGS TO CONSIDER
+            </span>
+
+
+            <h3>
+                Health Concerns
+            </h3>
+
+
+            <p>
+                {{ nutrition.health_concerns }}
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- VITAMINS -->
+
+    <div class="analysis-card">
+
+
+        <div class="card-title">
+
+            <span>
+                MICRONUTRIENTS
+            </span>
+
+            <h3>
+                Vitamins & Minerals
+            </h3>
+
+        </div>
+
+
+        <p class="detail-text">
+            {{ nutrition.vitamins }}
+        </p>
+
+
+        <p class="detail-text">
+            {{ nutrition.minerals }}
+        </p>
+
+
+    </div>
+
+
+
+    <!-- AI INSIGHT -->
+
+    <div class="ai-insight">
+
+
+        <div class="ai-badge">
+            AI
+        </div>
+
+
+        <div>
+
+
+            <span>
+                ARTIFICIAL INTELLIGENCE INSIGHT
+            </span>
+
+
+            <h3>
+                AI Health Recommendation
+            </h3>
+
+
+            <p>
+                {{ nutrition.ai_health_insight }}
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- SMARTER CHOICE -->
+
+    <div class="smarter-choice">
+
+
+        <div class="choice-line"></div>
+
+
+        <div>
+
+
+            <span>
+                SMARTER CHOICE
+            </span>
+
+
+            <h3>
+                Make Your Meal Healthier
+            </h3>
+
+
+            <p>
+                {{ nutrition.smarter_choice }}
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+{% endif %}
+
+
+
+<!-- ================= AI ASSISTANT ================= -->
+
+<section class="assistant"
+         id="assistant">
+
+
+    <div class="assistant-box">
+
+
+        <div class="assistant-heading">
+
+
+            <div class="ai-circle">
+                AI
+            </div>
+
+
+            <div>
+
+
+                <span>
+                    AI NUTRITION ASSISTANT
+                </span>
+
+
+                <h2>
+                    Ask About Your Food
+                </h2>
+
+
+                <p>
+                    Ask questions about nutrition,
+                    health benefits and healthy eating.
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <form method="POST"
+              class="question-form">
+
+
+            <input type="hidden"
+                   name="action"
+                   value="ask_question">
+
+
+            <input type="hidden"
+                   name="food"
+                   value="{{ food }}">
+
+
+            <input type="text"
+                   name="question"
+                   value="{{ question }}"
+                   placeholder="Is this food good for my health?"
+                   required>
+
+
+            <button type="submit">
+
+                Ask AI
+
+            </button>
+
+
+        </form>
+
+
+
+        {% if question_answer %}
+
+
+        <div class="answer">
+
+
+            <span>
+                AI RESPONSE
+            </span>
+
+
+            <p>
+                {{ question_answer }}
+            </p>
+
+
+        </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+
+    <div class="footer-brand">
+
+        <div class="footer-mark">
+            AI
+        </div>
+
+        <strong>
+            AI Nutrition Report
+        </strong>
+
+    </div>
+
+
+    <p>
+        Intelligent Food Analysis • Powered by Artificial Intelligence
+    </p>
+
+
+</footer>
+
+
+
+<script src="{{ url_for('static', filename='script.js') }}">
+</script>
+
+
+</body>
+
+</html>
